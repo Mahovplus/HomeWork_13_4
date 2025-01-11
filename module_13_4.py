@@ -14,7 +14,7 @@ class UserState(StatesGroup):
     growth = State()
     wight = State()
 
-@dp.message_handler(text='Calories')        # Функция - реакция на определенные сообщения
+@dp.message_handler(text='Karma')        # Функция - реакция на определенные сообщения
 async def set_message(message):
     await message.answer('Введите свой возраст.')
     await UserState.age.set()        # Запуск видоизменяющейся цепочки состояний от полученной, новой информации
@@ -35,10 +35,18 @@ async def set_wight(message, state):
 async def send_calories(message, state):
     await state.update_data(wight=message.text)
     data = await  state.get_data()   # Хранилище полученных данных в виде словаря (значение в строковом представление)
-    await message.answer(f"Ваша норма калорий на каждый день: "
-                         f" {10 * int(data['wight']) + 6.25 * int(data['growth']) - 5 * int(data['age']) + 5}")
+    await message.answer(f"Ваша норма кармической деятельности на каждый день: "
+                         f" {10 * int(data['wight']) + 6.25 * int(data['growth']) - 5 * int(data['age']) + 5}\n"
+                         "Процентное соотношение из скверных мыслей и действий.\n"
+                         "Максимально допустимое значение в день - 0.00000000000001.\n"
+                         "Пожалуйста, задумайтесь. Прощайте, Человек.")
                          # Реализация формулы подсчета калорий из полученных данных
     await state.finish()  # Завершающее звено цепочки
+
+@dp.message_handler(commands='start')
+async def all_message(message):
+    await message.answer("Привет! Я бот способствующий твоему духовному развитию. \
+                         Давай посчитаем норму твоей кармической деятельности на каждый день. Напиши мне 'Karma'" )
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
